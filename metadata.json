@@ -1,0 +1,5 @@
+{
+  "name": "Scoundrel Solitaire",
+  "description": "A minimal, visually appealing single-player card game based on the Scoundrel rules. Manage your health, equip weapons, and defeat monsters to survive the dungeon.",
+  "requestFramePermissions": []
+}

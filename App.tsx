@@ -112,9 +112,9 @@ const App: React.FC = () => {
   };
 
   const checkWinCondition = (currentRoom: (Card | null)[]) => {
-    const remainingDeck = deck.length;
-    const remainingRoom = currentRoom.filter(c => c !== null).length;
-    if (remainingDeck === 0 && remainingRoom === 0) {
+    const monstersInDeck = deck.filter(c => isMonster(c)).length;
+    const monstersInRoom = currentRoom.filter(c => c !== null && isMonster(c)).length;
+    if (monstersInDeck === 0 && monstersInRoom === 0) {
       setGameState(GameState.Won);
     }
   };
@@ -171,9 +171,10 @@ const App: React.FC = () => {
       if (newHealth <= 0) {
         setHealth(0);
         setGameState(GameState.Lost);
-      } else {
-        setHealth(newHealth);
+        return; // Don't discard card or process further if player died
       }
+
+      setHealth(newHealth);
       discardCard(index);
     }
     setFledLastTurn(false);

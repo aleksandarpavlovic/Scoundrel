@@ -1,20 +1,23 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Scoundrel Solitaire
 
-# Run and deploy your AI Studio app
+A dungeon-crawling solitaire card game where you battle monsters, collect weapons, and drink potions to survive. Navigate through rooms of enemies using strategy and luck to see how far you can go.
 
-This contains everything you need to run your app locally.
+## Play Online
 
-View your app in AI Studio: https://ai.studio/apps/drive/19u7zXq8f_tK4hrYak4CqvZGaYVE2dEYe
+Play the game now: [https://aleksandarpavlovic.github.io/Scoundrel/](https://aleksandarpavlovic.github.io/Scoundrel/)
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
+**Prerequisites:** Node.js
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+
+2. Run the app:
+   ```bash
+   npm run dev
+   ```
+
+The game will be available at `http://localhost:3000`

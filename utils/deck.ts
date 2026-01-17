@@ -64,3 +64,38 @@ export const getSuitIcon = (suit: Suit): string => {
 export const isMonster = (card: Card) => card.suit === Suit.Spades || card.suit === Suit.Clubs;
 export const isWeapon = (card: Card) => card.suit === Suit.Diamonds;
 export const isPotion = (card: Card) => card.suit === Suit.Hearts;
+
+export const getCardImageUrl = (card: Card, rankingSystem: RankingSystem = RankingSystem.Standard): string => {
+  // Map suit to code
+  const suitCode = {
+    [Suit.Hearts]: 'H',
+    [Suit.Diamonds]: 'D',
+    [Suit.Spades]: 'S',
+    [Suit.Clubs]: 'C'
+  }[card.suit];
+
+  // Map rank to code based on ranking system
+  let rankCode: string;
+  if (card.rank <= 9) {
+    rankCode = card.rank.toString();
+  } else if (card.rank === 10) {
+    rankCode = '0'; // 10 is represented as 0
+  } else {
+    // Face cards (11-14)
+    if (rankingSystem === RankingSystem.Standard) {
+      // Standard: J=11, Q=12, K=13, A=14
+      const faceMap = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
+      rankCode = faceMap[card.rank as keyof typeof faceMap];
+    } else {
+      // Alternate: A=11, J=12, Q=13, K=14
+      const faceMap = { 11: 'A', 12: 'J', 13: 'Q', 14: 'K' };
+      rankCode = faceMap[card.rank as keyof typeof faceMap];
+    }
+  }
+
+  return `/cards/${rankCode}${suitCode}.png`;
+};
+
+export const getCardBackUrl = (): string => {
+  return '/cards/back.png';
+};

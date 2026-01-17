@@ -18,6 +18,7 @@ const App: React.FC = () => {
   });
   
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [tempRankingSystem, setTempRankingSystem] = useState<RankingSystem>(rankingSystem);
   const [deck, setDeck] = useState<Card[]>([]);
   const [discard, setDiscard] = useState<Card[]>([]);
   const [room, setRoom] = useState<(Card | null)[]>([null, null, null, null]);
@@ -28,7 +29,7 @@ const App: React.FC = () => {
   const [canFlee, setCanFlee] = useState<boolean>(true);
   const [fledLastTurn, setFledLastTurn] = useState<boolean>(false);
   const [potionUsedThisRoom, setPotionUsedThisRoom] = useState<boolean>(false);
-  
+
   const [useBareHands, setUseBareHands] = useState<boolean>(false);
   const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState<boolean>(false);
@@ -221,9 +222,18 @@ const App: React.FC = () => {
     return groups;
   }, [discard]);
 
-  const handleRankingChange = (system: RankingSystem) => {
-    setRankingSystem(system);
-    resetGame();
+  const handleSettingsClose = () => {
+    // Only reset game if ranking system actually changed
+    if (tempRankingSystem !== rankingSystem) {
+      setRankingSystem(tempRankingSystem);
+      resetGame();
+    }
+    setIsSettingsOpen(false);
+  };
+
+  const handleSettingsOpen = () => {
+    setTempRankingSystem(rankingSystem);
+    setIsSettingsOpen(true);
   };
 
   return (
@@ -234,8 +244,8 @@ const App: React.FC = () => {
           <p className="text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-[0.3em] font-bold">Survive the Dungeon</p>
         </div>
         <div className="flex gap-4 items-center">
-          <button 
-            onClick={() => setIsSettingsOpen(true)}
+          <button
+            onClick={handleSettingsOpen}
             className="p-3 rounded-xl hover:bg-slate-300 dark:hover:bg-slate-800 transition-all text-xl bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 shadow-sm"
             title="Settings"
           >
@@ -252,11 +262,11 @@ const App: React.FC = () => {
 
       {/* Settings Modal */}
       {isSettingsOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setIsSettingsOpen(false)}>
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200" onClick={handleSettingsClose}>
           <div className="bg-slate-100 dark:bg-slate-900 w-full max-w-md rounded-3xl border border-slate-300 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
               <h3 className="text-xl font-bold tracking-tight">Settings</h3>
-              <button onClick={() => setIsSettingsOpen(false)} className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">✕</button>
+              <button onClick={handleSettingsClose} className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">✕</button>
             </div>
             <div className="p-6 flex flex-col gap-8">
               {/* Theme Setting */}
@@ -289,15 +299,15 @@ const App: React.FC = () => {
                     <span className="text-[10px] uppercase tracking-wider text-slate-500">Affects face card values</span>
                   </div>
                   <div className="flex bg-slate-200 dark:bg-slate-800 rounded-lg p-1">
-                    <button 
-                      onClick={() => handleRankingChange(RankingSystem.Standard)}
-                      className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${rankingSystem === RankingSystem.Standard ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-400'}`}
+                    <button
+                      onClick={() => setTempRankingSystem(RankingSystem.Standard)}
+                      className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${tempRankingSystem === RankingSystem.Standard ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-400'}`}
                     >
                       Standard
                     </button>
-                    <button 
-                      onClick={() => handleRankingChange(RankingSystem.Alternate)}
-                      className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${rankingSystem === RankingSystem.Alternate ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-400'}`}
+                    <button
+                      onClick={() => setTempRankingSystem(RankingSystem.Alternate)}
+                      className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${tempRankingSystem === RankingSystem.Alternate ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-400'}`}
                     >
                       Alternate
                     </button>
@@ -307,7 +317,7 @@ const App: React.FC = () => {
                   <p className="text-[10px] text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
                     <span className="font-bold">Note:</span> Changing ranking will start a <span className="underline">New Quest</span>.
                     <br />
-                    {rankingSystem === RankingSystem.Standard 
+                    {tempRankingSystem === RankingSystem.Standard
                       ? "Standard: J=11, Q=12, K=13, Ace is strongest (14)."
                       : "Alternate: Ace is 11, J=12, Q=13, King is strongest (14)."}
                   </p>
@@ -315,8 +325,8 @@ const App: React.FC = () => {
               </div>
             </div>
             <div className="p-4 bg-slate-50 dark:bg-slate-950/50 border-t border-slate-200 dark:border-slate-800">
-              <button 
-                onClick={() => setIsSettingsOpen(false)}
+              <button
+                onClick={handleSettingsClose}
                 className="w-full bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold py-2 rounded-xl transition-all"
               >
                 Close

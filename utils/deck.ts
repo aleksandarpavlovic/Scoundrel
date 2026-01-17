@@ -93,9 +93,9 @@ export const getCardImageUrl = (card: Card, rankingSystem: RankingSystem = Ranki
     }
   }
 
-  return `/cards/${rankCode}${suitCode}.png`;
+  return `cards/${rankCode}${suitCode}.png`;
 };
 
 export const getCardBackUrl = (): string => {
-  return '/cards/back.png';
+  return 'cards/back.png';
 };

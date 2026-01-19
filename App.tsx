@@ -191,10 +191,13 @@ const App: React.FC = () => {
       const monsterValue = card.rank;
       const effectiveWeaponValue = (weapon && !useBareHands) ? weapon.value : 0;
       const canUseWeapon = weapon && !useBareHands && (weapon.lastMonsterKilled === null || monsterValue < weapon.lastMonsterKilled);
+      let damage = 0;
       if (canUseWeapon) {
-        return -Math.max(0, monsterValue - effectiveWeaponValue);
+        damage = Math.max(0, monsterValue - effectiveWeaponValue);
+      } else {
+        damage = monsterValue;
       }
-      return -monsterValue;
+      return damage > health ? -health : -damage;
     }
 
     if (isPotion(card)) {
